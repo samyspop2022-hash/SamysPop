@@ -123,8 +123,11 @@ function App() {
       <FaTimes onClick={() => setProductoSeleccionado(null)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '24px' }} />
       
       {/* Esta línea controla que la imagen no sea gigante en PC */}
-  <img src={productoSeleccionado.imagen} className="modal-container img" alt={productoSeleccionado.nombre} />
-      
+  <img 
+  src={productoSeleccionado.imagen} 
+  className="modal-product-image" 
+  alt={productoSeleccionado.nombre} 
+/>
       <div style={{ textAlign: 'left', flex: 1 }}>
         <h2 style={{ color: '#ffffff' }}>{productoSeleccionado.nombre}</h2>
         <p style={{ color: '#ff69b4', fontSize: '14px' }}>{productoSeleccionado.categoria}</p>
