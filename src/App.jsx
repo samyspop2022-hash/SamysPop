@@ -123,7 +123,16 @@ function App() {
       <FaTimes onClick={() => setProductoSeleccionado(null)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '24px' }} />
       
       {/* Esta línea controla que la imagen no sea gigante en PC */}
-      <img src={productoSeleccionado.imagen} style={{ width: window.innerWidth < 600 ? '90%' : '40%', height: 'auto', borderRadius: '20px', objectFit: 'cover', margin: '0 auto' }} />
+      <img 
+  src={productoSeleccionado.imagen} 
+  style={{ 
+    width: '100%', 
+    maxWidth: '300px', 
+    height: 'auto', 
+    borderRadius: '20px', 
+    objectFit: 'cover' 
+  }} 
+/>
       
       <div style={{ textAlign: 'left', flex: 1 }}>
         <h2 style={{ color: '#ffffff' }}>{productoSeleccionado.nombre}</h2>
