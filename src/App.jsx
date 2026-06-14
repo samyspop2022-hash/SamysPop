@@ -125,13 +125,7 @@ function App() {
       {/* Esta línea controla que la imagen no sea gigante en PC */}
    <img 
   src={productoSeleccionado.imagen} 
-  style={{ 
-    width: '100%', 
-    height: '300px', 
-    borderRadius: '20px', 
-    objectFit: 'contain',
-    background: '#000'
-  }} 
+  className="modal-image" 
 />
       
       <div style={{ textAlign: 'left', flex: 1 }}>
