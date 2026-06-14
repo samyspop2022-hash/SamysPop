@@ -95,15 +95,18 @@ function App() {
 };
 
   return (
-    <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Urbanist, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
-      
-      <div onClick={() => setCarritoAbierto(true)} style={{ position: 'absolute', top: '30px', right: '30px', fontSize: '24px', cursor: 'pointer', color: '#ff69b4' }}>
-        <FaShoppingCart />
-        {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
-      </div>
-
-      <img src={miLogo} alt="Logo" style={{ width: '120px', marginBottom: '20px' }} />
-      <h1>Bienvenidos a Samys Pop!</h1>
+    <div style={{ padding: '40px 20px', textAlign: 'center', fontFamily: 'Urbanist, sans-serif', color: '#ffffff' }}>
+  
+  <img src={miLogo} alt="Logo" style={{ width: '150px', marginBottom: '15px' }} />
+  
+  <h1 style={{ fontSize: '2.5rem', margin: '0', color: '#ffffff', letterSpacing: '1px' }}>
+    ¡Bienvenidos a Samy's Pop!
+  </h1>
+  
+  <p style={{ fontSize: '1.2rem', color: '#ff69b4', marginTop: '10px', fontStyle: 'italic' }}>
+    Detalles Únicos, Recuerdos para Siempre.
+  </p>
+</div>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
         {productos.map(p => (
