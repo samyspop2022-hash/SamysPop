@@ -114,8 +114,8 @@ function App() {
           </div>
         ))}
       </div>
-
-     {productoSeleccionado && (
+{/* Modal de Productos */}
+{productoSeleccionado && (
   <div className="overlay-modal">
     <div className="modal-container">
       
@@ -141,17 +141,22 @@ function App() {
         </div>
         
         <p className="description">{productoSeleccionado.descripcion}</p>
-        <h2 className="price">${productoSeleccionado.precio.toFixed(2)}</h2>
+        
+        {/* Validación: Si precio no existe, que no rompa la app */}
+        <h2 className="price">${productoSeleccionado.precio ? productoSeleccionado.precio.toFixed(2) : "0.00"}</h2>
         
         <div className="counter-container">
-          <button onClick={() => setCantidad(Math.max(1, cantidad - 1))}><FaMinus /></button>
+          <button onClick={() => setCantidad(prev => Math.max(1, prev - 1))}><FaMinus /></button>
           <span>{cantidad}</span>
-          <button onClick={() => setCantidad(Math.min(productoSeleccionado.stock, cantidad + 1))}><FaPlus /></button>
+          <button onClick={() => setCantidad(prev => Math.min(productoSeleccionado.stock, prev + 1))}><FaPlus /></button>
         </div>
         
         <button 
           className="add-to-cart-btn"
-          onClick={() => agregarAlCarrito(productoSeleccionado, cantidad)} 
+          onClick={() => {
+             agregarAlCarrito(productoSeleccionado, cantidad);
+             setProductoSeleccionado(null); // Opcional: cierra el modal tras añadir
+          }} 
           disabled={productoSeleccionado.stock === 0}
         >
           {productoSeleccionado.stock > 0 ? 'Añadir al carrito' : 'Sin stock'}
