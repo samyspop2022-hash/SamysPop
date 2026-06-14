@@ -134,7 +134,15 @@ function App() {
       <div className="modal-content">
         <h2>{productoSeleccionado.nombre}</h2>
         <p className="category">{productoSeleccionado.categoria}</p>
-        <p className="stock">● En stock ({productoSeleccionado.stock})</p>
+        <div className="price-stock-row">
+  <h2 className="price">
+    ${productoSeleccionado.precio ? productoSeleccionado.precio.toFixed(2) : "0.00"}
+  </h2>
+
+  <p className="stock">
+    ● En stock ({productoSeleccionado.stock})
+  </p>
+</div>
         
         <div className="specs-container">
           <div className="spec-box"><small>Material</small><br/><strong>{productoSeleccionado.material}</strong></div>
