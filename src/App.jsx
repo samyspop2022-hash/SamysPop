@@ -119,31 +119,44 @@ function App() {
       </div>
 
       {/* Modal de Producto */}
-      {productoSeleccionado && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
-          <div className="modal-container"> 
-            <FaTimes onClick={() => setProductoSeleccionado(null)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '24px' }} />
-            <img src={productoSeleccionado.imagen} style={{ width: window.innerWidth < 600 ? '100%' : '40%', height: window.innerWidth < 600 ? '200px' : 'auto', borderRadius: '20px', objectFit: 'cover' }} />
-            <div style={{ textAlign: 'left', flex: 1 }}>
-              <h2 style={{ color: '#ffffff' }}>{productoSeleccionado.nombre}</h2>
-              <p style={{ color: '#ff69b4', fontSize: '14px' }}>{productoSeleccionado.categoria}</p>
-              <p style={{ fontSize: '12px', color: '#aaaaaa' }}>● En stock ({productoSeleccionado.stock})</p>
-              <div style={{ display: 'flex', gap: '10px', margin: '15px 0' }}>
-                <div style={{ border: '1px solid #ff69b4', padding: '10px', borderRadius: '10px', width: '100px', textAlign: 'center' }}><small>Material</small><br/><strong>{productoSeleccionado.material}</strong></div>
-                <div style={{ border: '1px solid #ff69b4', padding: '10px', borderRadius: '10px', width: '100px', textAlign: 'center' }}><small>Medida</small><br/><strong>{productoSeleccionado.medida}</strong></div>
-              </div>
-              <p style={{ fontSize: '14px' }}>{productoSeleccionado.descripcion}</p>
-              <h2 style={{ color: '#ff69b4' }}>${productoSeleccionado.precio.toFixed(2)}</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', margin: '20px 0' }}>
-                <button onClick={() => setCantidad(Math.max(1, cantidad - 1))} style={{ background: '#262626', color: 'white', border: '1px solid #444', padding: '10px', borderRadius: '10px', cursor: 'pointer' }}><FaMinus /></button>
-                <span style={{ fontSize: '18px' }}>{cantidad}</span>
-                <button onClick={() => setCantidad(Math.min(productoSeleccionado.stock, cantidad + 1))} style={{ background: '#262626', color: 'white', border: '1px solid #444', padding: '10px', borderRadius: '10px', cursor: 'pointer' }}><FaPlus /></button>
-              </div>
-              <button onClick={() => agregarAlCarrito(productoSeleccionado, cantidad)} disabled={productoSeleccionado.stock === 0} style={{ width: '100%', padding: '15px', background: productoSeleccionado.stock > 0 ? '#ff69b4' : '#444', color: 'white', borderRadius: '20px', border: 'none', cursor: 'pointer' }}>{productoSeleccionado.stock > 0 ? 'Añadir al carrito' : 'Sin stock'}</button>
-            </div>
-          </div>
+      {/* Modal de Producto */}
+{productoSeleccionado && (
+  <div className="overlay-modal">
+    <div className="modal-container">
+      <FaTimes onClick={() => setProductoSeleccionado(null)} className="close-icon" />
+      
+      <img src={productoSeleccionado.imagen} alt={productoSeleccionado.nombre} />
+      
+      <div className="modal-info">
+        <h2>{productoSeleccionado.nombre}</h2>
+        <p className="categoria">{productoSeleccionado.categoria}</p>
+        <p>● En stock ({productoSeleccionado.stock})</p>
+        
+        <div className="modal-specs">
+          <div className="spec-item"><small>Material</small><br/><strong>{productoSeleccionado.material}</strong></div>
+          <div className="spec-item"><small>Medida</small><br/><strong>{productoSeleccionado.medida}</strong></div>
         </div>
-      )}
+        
+        <p>{productoSeleccionado.descripcion}</p>
+        <h2>${productoSeleccionado.precio.toFixed(2)}</h2>
+        
+        <div className="modal-counter">
+          <button onClick={() => setCantidad(Math.max(1, cantidad - 1))}><FaMinus /></button>
+          <span>{cantidad}</span>
+          <button onClick={() => setCantidad(Math.min(productoSeleccionado.stock, cantidad + 1))}><FaPlus /></button>
+        </div>
+        
+        <button 
+          onClick={() => agregarAlCarrito(productoSeleccionado, cantidad)} 
+          disabled={productoSeleccionado.stock === 0}
+          className="btn-add"
+        >
+          {productoSeleccionado.stock > 0 ? 'Añadir al carrito' : 'Sin stock'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Carrito Abierto */}
       {carritoAbierto && (

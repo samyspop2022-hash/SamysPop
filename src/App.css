@@ -190,13 +190,16 @@
   display: flex;
   gap: 30px;
   width: 90%;
-  max-width: 700px;
+  max-width: 800px; /* Un poco más ancho para PC */
   position: relative;
   color: #ffffff;
+  align-items: center; /* Centra verticalmente el contenido */
 }
 
+/* La imagen solo ocupa el 40% en PC, evitando que se vea gigante */
 .modal-container img {
   width: 40%;
+  height: auto;
   border-radius: 20px;
   object-fit: cover;
 }
@@ -210,7 +213,7 @@
   }
   
   .modal-container img {
-    width: 100% !important;
-    height: 200px;
+    width: 100% !important; /* En celular ocupa todo el ancho */
+    height: 250px; /* Altura fija para que sea uniforme */
   }
 }
