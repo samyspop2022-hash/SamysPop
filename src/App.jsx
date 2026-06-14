@@ -19,6 +19,16 @@ function App() {
   const [metodoEnvio, setMetodoEnvio] = useState('');
   const [metodoPago, setMetodoPago] = useState('');
   const [zonaYummy, setZonaYummy] = useState('Barcelona'); 
+  const [categoriaActiva, setCategoriaActiva] = useState("Todos");
+  
+  const categorias = [
+  "Todos",
+  "Llaveros",
+  "Amigurumis",
+  "Funko Pop",
+  "Tazas",
+  "Franelas"
+];
 
   const productos = [
     { id: 1, nombre: "Llavero Luffy", precio: 8.0, categoria: "Llaveros", material: "Hilo Algodón", medida: "10 cm", stock: 1, descripcion: "Llavero Amigurumi de Luffy tejido a mano con detalles precisos.", imagen: img1 },
@@ -94,7 +104,12 @@ function App() {
   const costoAdministrativo = metodoEnvio === 'Envío Nacional- Cobro en Destino' ? 1 : 0;
   return total + costoAdministrativo;
 };
-
+const productosFiltrados =
+  categoriaActiva === "Todos"
+    ? productos
+    : productos.filter(
+        (p) => p.categoria === categoriaActiva
+      );
   return (
     <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
@@ -124,22 +139,27 @@ function App() {
     <span>Envíos a toda Venezuela</span>
   </div>
 
-  <button
-    className="hero-button"
-    onClick={() =>
-      window.scrollTo({
-        top: 500,
-        behavior: "smooth"
-      })
-    }
-  >
-    Ver Productos
-  </button>
+  {/* CATEGORÍAS */}
+  <div className="categorias">
+    {categorias.map((cat) => (
+      <button
+        key={cat}
+        className={
+          categoriaActiva === cat
+            ? "categoria-btn activa"
+            : "categoria-btn"
+        }
+        onClick={() => setCategoriaActiva(cat)}
+      >
+        {cat}
+      </button>
+    ))}
+  </div>
 
 </div>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
-        {productos.map(p => (
+        {productosFiltrados.map(p => (
           <div
   key={p.id}
   className="product-card"
