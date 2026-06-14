@@ -182,38 +182,34 @@
     border-right-color: var(--border);
   }
 }
+/* Fondo oscuro */
+.overlay-modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85); display: flex;
+  justify-content: center; align-items: center; z-index: 5000;
+}
+
+/* Contenedor del modal */
 .modal-container {
-  background: #000;
-  padding: 30px;
-  border-radius: 35px;
-  border: 2px solid #ff69b4;
-  display: flex;
-  gap: 30px;
-  width: 90%;
-  max-width: 800px; /* Un poco más ancho para PC */
-  position: relative;
-  color: #ffffff;
-  align-items: center; /* Centra verticalmente el contenido */
+  background: #000; padding: 30px; border-radius: 35px;
+  border: 2px solid #ff69b4; width: 90%; max-width: 800px;
+  display: flex; gap: 30px; position: relative; color: white;
 }
 
-/* La imagen solo ocupa el 40% en PC, evitando que se vea gigante */
-.modal-container img {
-  width: 40%;
-  height: auto;
-  border-radius: 20px;
-  object-fit: cover;
-}
-
-/* Ajuste para celulares */
-@media (max-width: 600px) {
-  .modal-container {
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
-  }
-  
+.modal-container img { width: 40%; border-radius: 20px; object-fit: cover; }
+.close-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; color: #ff69b4; font-size: 24px; }
+.modal-info { text-align: left; flex: 1; }
+.modal-specs { display: flex; gap: 10px; margin: 15px 0; }
+.spec-item { border: 1px solid #ff69b4; padding: 10px; border-radius: 10px; width: 100px; text-align: center; }
+@media (min-width: 601px) {
   .modal-container img {
-    width: 100% !important; /* En celular ocupa todo el ancho */
-    height: 250px; /* Altura fija para que sea uniforme */
+    max-width: 300px !important; /* Limita la imagen a un tamaño razonable */
+    height: auto !important;
   }
+}
+
+/* Adaptable a móvil */
+@media (max-width: 600px) {
+  .modal-container { flex-direction: column; }
+  .modal-container img { width: 100%; height: 200px; }
 }
