@@ -95,18 +95,15 @@ function App() {
 };
 
   return (
-    <div style={{ padding: '40px 20px', textAlign: 'center', fontFamily: 'Urbanist, sans-serif', color: '#ffffff' }}>
-  
-  <img src={miLogo} alt="Logo" style={{ width: '150px', marginBottom: '15px' }} />
-  
-  <h1 style={{ fontSize: '2.5rem', margin: '0', color: '#ffffff', letterSpacing: '1px' }}>
-    ¡Bienvenidos a Samy's Pop!
-  </h1>
-  
-  <p style={{ fontSize: '1.2rem', color: '#ff69b4', marginTop: '10px', fontStyle: 'italic' }}>
-    Detalles Únicos, Recuerdos para Siempre.
-  </p>
-</div>
+    <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Urbanist, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
+      
+      <div onClick={() => setCarritoAbierto(true)} style={{ position: 'absolute', top: '30px', right: '30px', fontSize: '24px', cursor: 'pointer', color: '#ff69b4' }}>
+        <FaShoppingCart />
+        {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
+      </div>
+
+      <img src={miLogo} alt="Logo" style={{ width: '120px', marginBottom: '20px' }} />
+      <h1>Bienvenidos a Samys Pop!</h1>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
         {productos.map(p => (
@@ -123,7 +120,6 @@ function App() {
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
           <div className="modal-container"> 
             <FaTimes onClick={() => setProductoSeleccionado(null)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '24px' }} />
-            
             <img src={productoSeleccionado.imagen} style={{ width: window.innerWidth < 600 ? '100%' : '40%', height: window.innerWidth < 600 ? '200px' : 'auto', borderRadius: '20px', objectFit: 'cover' }} />
             <div style={{ textAlign: 'left', flex: 1 }}>
               <h2 style={{ color: '#ffffff' }}>{productoSeleccionado.nombre}</h2>
