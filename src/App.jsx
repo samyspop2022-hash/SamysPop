@@ -96,22 +96,54 @@ function App() {
 };
 
   return (
-    <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Urbanist, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
+    <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
       <div onClick={() => setCarritoAbierto(true)} style={{ position: 'absolute', top: '30px', right: '30px', fontSize: '24px', cursor: 'pointer', color: '#ff69b4' }}>
         <FaShoppingCart />
         {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
       </div>
 
-      <img src={miLogo} alt="Logo" style={{ width: '120px', marginBottom: '20px' }} />
-      <h1>Bienvenidos a Samys Pop!</h1>
+      <img
+  src={miLogo}
+  alt="Logo"
+  className="logo-principal"
+/>
+
+<h1 className="titulo-principal">
+  ¡Bienvenidos a Samy's Pop!
+</h1>
+
+<p className="slogan">
+  Regalos Únicos, Recuerdos para Siempre
+</p>
+
+<div className="envios">
+  <FaTruck color="#ff69b4" />
+  <span>Envíos a toda Venezuela</span>
+</div>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
         {productos.map(p => (
-          <div key={p.id} onClick={() => { setProductoSeleccionado(p); setCantidad(1); }} style={{ backgroundColor: '#262626', padding: '20px', borderRadius: '20px', width: '200px', cursor: 'pointer' }}>
-            <img src={p.imagen} style={{ width: '100%', height: '140px', objectFit: 'contain', borderRadius: '10px' }} />
-            <h3>{p.nombre}</h3>
-            <p style={{ color: '#ff69b4', fontWeight: 'bold' }}>${p.precio.toFixed(2)}</p>
+          <div
+  key={p.id}
+  className="product-card"
+  onClick={() => {
+    setProductoSeleccionado(p);
+    setCantidad(1);
+  }}
+>
+            <img
+  src={p.imagen}
+  className="product-image"
+  alt={p.nombre}
+/>
+            <h3 className="product-name">
+  {p.nombre}
+</h3>
+
+<p className="product-price">
+  ${p.precio.toFixed(2)}
+</p>
           </div>
         ))}
       </div>
@@ -135,9 +167,6 @@ function App() {
         <h2>{productoSeleccionado.nombre}</h2>
         <p className="category">{productoSeleccionado.categoria}</p>
         <div className="price-stock-row">
-  <h2 className="price">
-    ${productoSeleccionado.precio ? productoSeleccionado.precio.toFixed(2) : "0.00"}
-  </h2>
 
   <p className="stock">
     ● En stock ({productoSeleccionado.stock})
