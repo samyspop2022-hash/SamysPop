@@ -190,26 +190,42 @@
 }
 
 
-/* Estilo base para la imagen (PC) */
-/* Esto asegura que la imagen no se desborde pase lo que pase */
-.modal-product-image {
-  width: 40% !important;
-  height: auto !important;
-  border-radius: 20px !important;
-  object-fit: cover !important;
-  display: block !important;
+/* Contenedor principal del modal */
+.modal-container {
+  background: #000;
+  padding: 30px;
+  border-radius: 35px;
+  border: 2px solid #ff69b4;
+  max-width: 800px;
+  width: 90%; 
+  display: flex;
+  gap: 30px;
+  position: relative;
+  align-items: flex-start; /* Alinea imagen y texto arriba */
 }
 
-@media (max-width: 600px) {
+/* Imagen del producto */
+.modal-product-image {
+  width: 40%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ajustes para móviles (pantallas menores a 768px) */
+@media (max-width: 768px) {
   .modal-container {
-    flex-direction: column !important;
-    padding: 15px !important;
+    flex-direction: column; /* Pone la imagen sobre el texto */
+    align-items: center;
+    padding: 20px;
+    max-height: 90vh;      /* Evita que se salga de la pantalla */
+    overflow-y: auto;      /* Permite scroll si el contenido es largo */
   }
-  
+
   .modal-product-image {
-    width: 100% !important;
-    height: 300px !important;
-    object-fit: contain !important; /* Muestra el muñeco completo */
-    background: #000 !important;
+    width: 100%;           /* Ocupa todo el ancho en móvil */
+    max-height: 300px;
+    object-fit: contain;
   }
 }
