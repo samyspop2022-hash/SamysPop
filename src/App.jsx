@@ -6,6 +6,7 @@ import miLogo from './assets/logo.png';
 import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
 import img1 from './assets/luffy.jpg';
 import img2 from './assets/Pochacco.jpg';
+import './App.css';
 
 function App() {
   const [carrito, setCarrito] = useState([]);
@@ -114,7 +115,7 @@ function App() {
           </div>
         ))}
       </div>
-{/* Modal de Productos */}
+
 {productoSeleccionado && (
   <div className="overlay-modal">
     <div className="modal-container">
