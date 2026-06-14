@@ -52,7 +52,6 @@ function App() {
     return;
   }
 
-  // 1. Lógica para Firestore (que ya tienes)
   let costoExtra = metodoEnvio === 'Envío Nacional- Cobro en Destino' ? 1 : 0;
   
   try {
@@ -119,9 +118,9 @@ function App() {
       {/* Modal de Producto */}
       {productoSeleccionado && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
-          <div style={{ background: '#000', padding: '30px', borderRadius: '35px', border: '2px solid #ff69b4', display: 'flex', gap: '30px', maxWidth: '700px', width: '90%', position: 'relative', color: '#ffffff' }}>
+          <div className="modal-container"> 
             <FaTimes onClick={() => setProductoSeleccionado(null)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '24px' }} />
-            <img src={productoSeleccionado.imagen} style={{ width: '40%', borderRadius: '20px', objectFit: 'cover' }} />
+            <img src={productoSeleccionado.imagen} style={{ width: window.innerWidth < 600 ? '100%' : '40%', height: window.innerWidth < 600 ? '200px' : 'auto', borderRadius: '20px', objectFit: 'cover' }} />
             <div style={{ textAlign: 'left', flex: 1 }}>
               <h2 style={{ color: '#ffffff' }}>{productoSeleccionado.nombre}</h2>
               <p style={{ color: '#ff69b4', fontSize: '14px' }}>{productoSeleccionado.categoria}</p>
