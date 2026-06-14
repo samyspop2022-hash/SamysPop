@@ -103,23 +103,39 @@ function App() {
         {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
       </div>
 
-      <img
-  src={miLogo}
-  alt="Logo"
-  className="logo-principal"
-/>
+      <div className="hero-banner">
 
-<h1 className="titulo-principal">
-  ¡Bienvenidos a Samy's Pop!
-</h1>
+  <img
+    src={miLogo}
+    alt="Logo"
+    className="logo-principal"
+  />
 
-<p className="slogan">
-  Regalos Únicos, Recuerdos para Siempre
-</p>
+  <h1 className="titulo-principal">
+    ¡Bienvenidos a Samy's Pop!
+  </h1>
 
-<div className="envios">
-  <FaTruck color="#ff69b4" />
-  <span>Envíos a toda Venezuela</span>
+  <p className="slogan">
+    Regalos Únicos, Recuerdos para Siempre
+  </p>
+
+  <div className="envios">
+    <FaTruck color="#ff69b4" />
+    <span>Envíos a toda Venezuela</span>
+  </div>
+
+  <button
+    className="hero-button"
+    onClick={() =>
+      window.scrollTo({
+        top: 500,
+        behavior: "smooth"
+      })
+    }
+  >
+    Ver Productos
+  </button>
+
 </div>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
