@@ -155,7 +155,27 @@ function App() {
               </div>
             ))}
             <h3>Total: ${total.toFixed(2)}</h3>
-            <button onClick={() => { setCarritoAbierto(false); setCheckoutAbierto(true); }} style={{ width: '100%', padding: '15px', background: '#ff69b4', borderRadius: '20px', border: 'none', color: 'white', cursor: 'pointer' }}>Continuar al checkout</button>
+            <button 
+  onClick={() => { 
+    if (carrito.length === 0) {
+      setCarritoAbierto(false);
+    } else {
+      setCarritoAbierto(false); 
+      setCheckoutAbierto(true); 
+    }
+  }} 
+  style={{ 
+    width: '100%', 
+    padding: '15px', 
+    background: carrito.length === 0 ? '#444' : '#ff69b4', 
+    borderRadius: '20px', 
+    border: 'none', 
+    color: 'white', 
+    cursor: carrito.length === 0 ? 'default' : 'pointer' 
+  }}
+>
+  {carrito.length === 0 ? 'Volver a productos' : 'Continuar al checkout'}
+</button>
           </div>
         </div>
       )}
