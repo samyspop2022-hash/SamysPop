@@ -10,7 +10,7 @@ import MT72425 from '../assets/tazas/MT72425.jpg';
 import cancionromantica from '../assets/tazas/cancionromantica.png';
 import estrellita from '../assets/tazas/estrellita.png';
 import sinotetengo from '../assets/tazas/sinotetengo.png';
-import taza71 from '../assets/tazas/taza71.JPG';
+import taza71 from '../assets/tazas/taza71.jpg';
 
 
 
