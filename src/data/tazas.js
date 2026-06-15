@@ -8,7 +8,7 @@ import filipenses48 from '../assets/tazas/filipenses48.jpg';
 import josue19 from '../assets/tazas/josue19.jpg';
 import mt72425 from '../assets/tazas/mt72425.jpg';
 import cancionromantica from '../assets/tazas/cancionromantica.png';
-import estrellita from '../assets/tazas/estrellita.png'
+import estrellita from '../assets/tazas/estrellita.png';
 
 
 
