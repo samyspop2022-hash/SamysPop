@@ -6,7 +6,7 @@ import juan48 from '../assets/tazas/juan48.jpg';
 import apocalipsis1978 from '../assets/tazas/apocalipsis1978.jpg';
 import filipenses48 from '../assets/tazas/filipenses48.jpg';
 import josue19 from '../assets/tazas/josue19.jpg';
-import mt72425 from '../assets/tazas/mt72425.jpg';
+import MT72425 from '../assets/tazas/MT72425.jpg';
 import cancionromantica from '../assets/tazas/cancionromantica.png';
 import estrellita from '../assets/tazas/estrellita.png';
 
@@ -34,7 +34,7 @@ export const tazas = [
   crearTaza(6, "Taza Personalizada Apocalipsis 19:7-8", 7, 1000, "Taza de cerámica sublimada, Se puede incluir tu nombre.", apocalipsis1978),
   crearTaza(7, "Taza Personalizada Filipenses 4:8", 7, 1000, "Taza de cerámica sublimada, Se puede incluir tu nombre.", filipenses48),
   crearTaza(8, "Taza Personalizada Josue 1:9", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", josue19),
-  crearTaza(9, "Taza Personalizada Mt 7:24-25", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", mt72425),
+  crearTaza(9, "Taza Personalizada Mt 7:24-25", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", MT72425),
   crearTaza(10, "Taza Flork Canción Romantica", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", cancionromantica),
   crearTaza(11, "Taza Flork Eres Mi Estrellita", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", estrellita),
   
