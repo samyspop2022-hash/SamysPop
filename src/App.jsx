@@ -231,9 +231,8 @@ const productosFiltrados =
         <h2>{productoSeleccionado.nombre}</h2>
         <p className="category">{productoSeleccionado.categoria}</p>
         <div className="price-stock-row">
-
-  <p className="stock">
-    ● En stock ({productoSeleccionado.stock})
+  <p className="stock" style={{ color: productoSeleccionado.stock > 0 ? '#4caf50' : '#ff4444', fontWeight: 'bold' }}>
+    {productoSeleccionado.stock > 0 ? `● En stock (${productoSeleccionado.stock})` : '● Agotado'}
   </p>
 </div>
         
@@ -254,15 +253,19 @@ const productosFiltrados =
         </div>
         
         <button 
-          className="add-to-cart-btn"
-          onClick={() => {
-             agregarAlCarrito(productoSeleccionado, cantidad);
-             setProductoSeleccionado(null); // Opcional: cierra el modal tras añadir
-          }} 
-          disabled={productoSeleccionado.stock === 0}
-        >
-          {productoSeleccionado.stock > 0 ? 'Añadir al carrito' : 'Sin stock'}
-        </button>
+  className="add-to-cart-btn"
+  style={{ 
+    backgroundColor: productoSeleccionado.stock > 0 ? '#ff69b4' : '#333',
+    cursor: productoSeleccionado.stock > 0 ? 'pointer' : 'not-allowed'
+  }}
+  onClick={() => {
+    agregarAlCarrito(productoSeleccionado, cantidad);
+    setProductoSeleccionado(null);
+  }} 
+  disabled={productoSeleccionado.stock === 0}
+>
+  {productoSeleccionado.stock > 0 ? 'Añadir al carrito' : 'Agotado'}
+</button>
       </div>
     </div>
   </div>
