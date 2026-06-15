@@ -1,6 +1,6 @@
 import luffy from '../assets/llaveros/luffy.jpg';
 import pochacco from '../assets/llaveros/Pochacco.jpg';
-import zorro from '../assets/llaveros/zorro mediano.jpg';
+import zorroMediano from '../assets/llaveros/zorro mediano.jpg';  // ← Agrega esta importación
 
 export const llaveros = [
   {
@@ -12,7 +12,7 @@ export const llaveros = [
     medida: "10 cm",
     stock: 1,
     descripcion: "Llavero Amigurumi de Luffy tejido a mano con detalles precisos.",
-    imagen: luffy
+    imagen: luffy,
   },
 
   {
@@ -24,10 +24,10 @@ export const llaveros = [
     medida: "10 cm",
     stock: 1,
     descripcion: "Llavero de Pochacco, tierno y resistente.",
-    imagen: pochacco
-  }
+    imagen: pochacco,
+  },
 
-   {
+  {
     id: 3,
     nombre: "Llavero de Zorro",
     precio: 6,
@@ -36,6 +36,6 @@ export const llaveros = [
     medida: "7 cm",
     stock: 1,
     descripcion: "Llavero de Zorro, tierno y resistente.",
-    imagen: zorro mediano
-  }
+    imagen: zorroMediano, 
+  },
 ];
