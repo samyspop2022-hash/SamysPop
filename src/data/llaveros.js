@@ -21,6 +21,7 @@ import pinguinorosa from '../assets/llaveros/pinguinorosa.jpg';
 import hongoverde from '../assets/llaveros/hongoverde.jpg';
 import snoopy from '../assets/llaveros/snoopy.jpg';
 import patricio from '../assets/llaveros/patricio.jpg';
+import dientepresonalizado from '../assets/llaveros/dientepersonalizado.jpeg';
 
 const crearProducto = (id, nombre, precio, medida, stock, descripcion, imagen, material = "Hilo 60% Algodón 40% Acrílico") => ({
   id,
@@ -57,7 +58,8 @@ export const llaveros = [
   crearProducto(20, "Llavero de Pingüino Rosa", 3, "4 cm", 0, "Llavero de Pingüino color rosa, tierno y resistente.", pinguinorosa),
   crearProducto(21, "Llavero de Champiñón de Vida Extra", 3, "3 cm", 1, "Llavero de Champiñón de Vida Extra, incluye la vida extra 😉", hongoverde),
   crearProducto(22, "Llavero de Snoopy", 5, "5 cm", 0, "Llavero de Snoopy supertierno y con detalles precisos.", snoopy),
-  crearProducto(23, "Llavero de Patricio", 5, "5 cm", 0, "Llavero de Patricio, el mejor amigo que podrías tener.", patricio),
+  crearProducto(23, "Llavero de Patricio", 5, "5 cm", 1, "Llavero de Patricio, el mejor amigo que podrías tener.", patricio),
+  crearProducto(24, "Llavero de Diente Personalizado", 5, "5 cm", 1, "¡Tu sonrisa te acompaña a todos lados! 🦷✨ Le Colocamos tu Nombre!", dientepresonalizado),
   
 
 ];

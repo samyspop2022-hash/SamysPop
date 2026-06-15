@@ -9,6 +9,8 @@ import josue19 from '../assets/tazas/josue19.jpg';
 import MT72425 from '../assets/tazas/MT72425.jpg';
 import cancionromantica from '../assets/tazas/cancionromantica.png';
 import estrellita from '../assets/tazas/estrellita.png';
+import sinotetengo from '../assets/tazas/sinotetengo.png';
+import taza71 from '../assets/tazas/taza71.JPG';
 
 
 
@@ -37,5 +39,8 @@ export const tazas = [
   crearTaza(9, "Taza Personalizada Mt 7:24-25", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", MT72425),
   crearTaza(10, "Taza Flork Canción Romantica", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", cancionromantica),
   crearTaza(11, "Taza Flork Eres Mi Estrellita", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", estrellita),
+  crearTaza(12, "Taza Flork Si no te tengo", 7, 1000, "Taza de cerámica sublimada,Se puede incluir tu nombre.", sinotetengo),
+  crearTaza(13, "Taza Jesus Hijo de Dios", 7, 1000, "Taza de cerámica sublimada", taza71),
+  
   
 ];

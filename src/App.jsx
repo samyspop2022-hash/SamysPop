@@ -19,6 +19,8 @@ function App() {
   const [metodoPago, setMetodoPago] = useState('');
   const [zonaYummy, setZonaYummy] = useState('Barcelona'); 
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
+  const [paginaActual, setPaginaActual] = useState(1); // NUEVA LÍNEA
+  const productosPorPagina = 12; // NUEVA LÍNEA
   
   const categorias = [
   "Todos",
@@ -121,12 +123,19 @@ useEffect(() => {
   const costoAdministrativo = metodoEnvio === 'Envío Nacional- Cobro en Destino' ? 1 : 0;
   return total + costoAdministrativo;
 };
+
+// NUEVAS LÍNEAS PARA PAGINACIÓN
 const productosFiltrados =
   categoriaActiva === "Todos"
     ? productos
-    : productos.filter(
-        (p) => p.categoria === categoriaActiva
-      );
+    : productos.filter((p) => p.categoria === categoriaActiva);
+
+const indexUltimo = paginaActual * productosPorPagina;
+const indexPrimero = indexUltimo - productosPorPagina;
+const productosPaginados = productosFiltrados.slice(indexPrimero, indexUltimo);
+const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+// FIN NUEVAS LÍNEAS
+
   return (
     <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
@@ -195,7 +204,10 @@ const productosFiltrados =
             ? "categoria-btn activa"
             : "categoria-btn"
         }
-        onClick={() => setCategoriaActiva(cat)}
+        onClick={() => {
+          setCategoriaActiva(cat);
+          setPaginaActual(1); // Resetea a página 1
+        }}
       >
         {cat}
       </button>
@@ -205,7 +217,7 @@ const productosFiltrados =
 </div>
       
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
-        {productosFiltrados.map(p => (
+        {productosPaginados.map(p => (
           <div
   key={p.id}
   className="product-card"
@@ -229,6 +241,33 @@ const productosFiltrados =
           </div>
         ))}
       </div>
+
+      {/* BOTONES DE PAGINACIÓN */}
+      {totalPaginas > 1 && (
+        <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => {
+                setPaginaActual(page);
+                window.scrollTo(0, 0);
+              }}
+              style={{
+                padding: '10px 15px',
+                background: paginaActual === page ? '#ff69b4' : '#262626',
+                color: 'white',
+                border: '1px solid #444',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: paginaActual === page ? 'bold' : 'normal'
+              }}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      )}
+      {/* FIN BOTONES DE PAGINACIÓN */}
 
 {productoSeleccionado && (
   <div className="overlay-modal">

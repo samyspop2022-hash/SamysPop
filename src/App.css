@@ -517,3 +517,14 @@
     gap: 8px;
   }
 }
+@media (max-width: 768px) {
+  .product-card {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    width: calc(50% - 10px);
+  }
+}
