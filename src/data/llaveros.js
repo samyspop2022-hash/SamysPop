@@ -1,5 +1,6 @@
 import luffy from '../assets/llaveros/luffy.jpg';
 import pochacco from '../assets/llaveros/Pochacco.jpg';
+import zorro from '../assets/llaveros/zorro mediano.jpg';
 
 export const llaveros = [
   {
@@ -7,7 +8,7 @@ export const llaveros = [
     nombre: "Llavero Luffy",
     precio: 8,
     categoria: "Llaveros",
-    material: "Hilo Algodón",
+    material: "Hilo 60% Algodón 40% Acrílico",
     medida: "10 cm",
     stock: 1,
     descripcion: "Llavero Amigurumi de Luffy tejido a mano con detalles precisos.",
@@ -19,10 +20,22 @@ export const llaveros = [
     nombre: "Llavero Pochacco",
     precio: 8,
     categoria: "Llaveros",
-    material: "Hilo Algodón",
+    material: "Hilo 60% Algodón 40% Acrílico",
     medida: "10 cm",
-    stock: 3,
+    stock: 1,
     descripcion: "Llavero de Pochacco, tierno y resistente.",
     imagen: pochacco
+  }
+
+   {
+    id: 3,
+    nombre: "Llavero de Zorro",
+    precio: 6,
+    categoria: "Llaveros",
+    material: "Hilo 60% Algodón 40% Acrílico",
+    medida: "7 cm",
+    stock: 1,
+    descripcion: "Llavero de Zorro, tierno y resistente.",
+    imagen: zorro mediano
   }
 ];
