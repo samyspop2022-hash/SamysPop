@@ -130,10 +130,28 @@ const productosFiltrados =
   return (
     <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
-      <div onClick={() => setCarritoAbierto(true)} style={{ position: 'absolute', top: '30px', right: '30px', fontSize: '24px', cursor: 'pointer', color: '#ff69b4' }}>
-        <FaShoppingCart />
-        {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
-      </div>
+      <div onClick={() => setCarritoAbierto(true)} style={{ position: 'fixed', top: '20px', right: '20px', fontSize: '32px', cursor: 'pointer', color: '#ff69b4', zIndex: 1000, transition: 'all 0.3s ease' }} className="carrito-icon">
+  <FaShoppingCart />
+  {carrito.length > 0 && (
+    <span style={{ 
+      position: 'absolute', 
+      top: '-8px', 
+      right: '-12px', 
+      background: 'linear-gradient(135deg, #ff69b4, #ff4fa8)',
+      color: 'white',
+      fontSize: '13px', 
+      borderRadius: '50%', 
+      padding: '4px 8px',
+      fontWeight: 'bold',
+      border: '2px solid #000',
+      boxShadow: '0 0 10px rgba(255, 105, 180, 0.6)',
+      minWidth: '24px',
+      textAlign: 'center'
+    }}>
+      {carrito.length}
+    </span>
+  )}
+</div>
 <div
   style={{
     background: '#262626',
@@ -272,42 +290,74 @@ const productosFiltrados =
 )}
 
       {/* Carrito Abierto */}
-      {carritoAbierto && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 3000 }}>
-          <div style={{ background: '#000', padding: '30px', borderRadius: '35px', border: '2px solid #ff69b4', width: '90%', maxWidth: '400px', color: 'white', position: 'relative' }}>
-            <FaTimes onClick={() => setCarritoAbierto(false)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '20px' }} />
-            <h2>Tu carrito</h2>
-            {carrito.map((item, index) => (
-              <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span>{item.nombre}</span>
-                <span>${item.precio.toFixed(2)} <FaTrash onClick={() => eliminarDelCarrito(index)} style={{ cursor: 'pointer', color: '#ff69b4', marginLeft: '10px' }} /></span>
+{carritoAbierto && (
+  <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 3000 }}>
+    <div style={{ background: '#000', padding: '30px', borderRadius: '35px', border: '2px solid #ff69b4', width: '90%', maxWidth: '400px', maxHeight: '85vh', overflowY: 'auto', color: 'white', position: 'relative' }}>
+      <FaTimes onClick={() => setCarritoAbierto(false)} style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer', color: '#ff69b4', fontSize: '20px' }} />
+      <h2 style={{ marginBottom: '20px' }}>Tu carrito</h2>
+      {carrito.length === 0 ? (
+        <p style={{ color: '#999', textAlign: 'center' }}>Tu carrito está vacío</p>
+      ) : (
+        <>
+          {Array.from(
+            carrito.reduce((acc, item) => {
+              if (!acc.has(item.id)) {
+                acc.set(item.id, { producto: item, cantidad: 0 });
+              }
+              acc.get(item.id).cantidad += 1;
+              return acc;
+            }, new Map()).values()
+          ).map((group) => (
+            <div key={group.producto.id} className="modal-carrito-item">
+              <div style={{ flex: 1 }}>
+                <span style={{ fontWeight: 'bold', fontSize: '14px', display: 'block', marginBottom: '5px', wordBreak: 'break-word' }}>
+                  {group.producto.nombre}
+                </span>
+                <p style={{ margin: '0', color: '#ff69b4', fontSize: '12px' }}>
+                  Cantidad: <strong>{group.cantidad}</strong>
+                </p>
               </div>
-            ))}
-            <h3>Total: ${total.toFixed(2)}</h3>
-            <button 
-  onClick={() => { 
-    if (carrito.length === 0) {
-      setCarritoAbierto(false);
-    } else {
-      setCarritoAbierto(false); 
-      setCheckoutAbierto(true); 
-    }
-  }} 
-  style={{ 
-    width: '100%', 
-    padding: '15px', 
-    background: carrito.length === 0 ? '#444' : '#ff69b4', 
-    borderRadius: '20px', 
-    border: 'none', 
-    color: 'white', 
-    cursor: carrito.length === 0 ? 'default' : 'pointer' 
-  }}
->
-  {carrito.length === 0 ? 'Volver a productos' : 'Continuar al checkout'}
-</button>
-          </div>
-        </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                <span style={{ whiteSpace: 'nowrap' }}>${(group.producto.precio * group.cantidad).toFixed(2)}</span>
+                <FaTrash 
+                  onClick={() => {
+                    const newCarrito = carrito.filter(item => item.id !== group.producto.id);
+                    setCarrito(newCarrito);
+                  }} 
+                  style={{ cursor: 'pointer', color: '#ff69b4', flexShrink: 0 }} 
+                />
+              </div>
+            </div>
+          ))}
+        </>
       )}
+      <h3 style={{ marginTop: '20px', borderTop: '1px solid #333', paddingTop: '15px', textAlign: 'center' }}>Total: ${total.toFixed(2)}</h3>
+      <button 
+        onClick={() => { 
+          if (carrito.length === 0) {
+            setCarritoAbierto(false);
+          } else {
+            setCarritoAbierto(false); 
+            setCheckoutAbierto(true); 
+          }
+        }} 
+        style={{ 
+          width: '100%', 
+          padding: '15px', 
+          background: carrito.length === 0 ? '#444' : '#ff69b4', 
+          borderRadius: '20px', 
+          border: 'none', 
+          color: 'white', 
+          cursor: carrito.length === 0 ? 'default' : 'pointer',
+          marginTop: '15px',
+          fontWeight: 'bold'
+        }}
+      >
+        {carrito.length === 0 ? 'Volver a productos' : 'Continuar al checkout'}
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Checkout */}
       {checkoutAbierto && (
@@ -406,12 +456,19 @@ const productosFiltrados =
             <span>Bs. {(calcularTotalFinal() * tasaBCV).toFixed(2)}</span>
           </div>
 
-          <button 
-            onClick={confirmarPedido} 
-            style={{ width: '100%', padding: '15px', background: '#ff69b4', color: 'white', marginTop: '20px', borderRadius: '15px', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            Confirmar pedido
-          </button>
+           {/* Aviso de captura */}
+            <div style={{ marginTop: '20px', padding: '15px', background: '#1a1a1a', borderRadius: '15px', border: '1px solid #ff69b4', textAlign: 'center' }}>
+              <p style={{ margin: '0', fontSize: '13px', color: '#ff69b4', fontWeight: 'bold' }}>
+                📸 Toma una captura de tu comprobante de pago y envíalo por WhatsApp
+              </p>
+            </div>
+
+            <button 
+              onClick={confirmarPedido} 
+              style={{ width: '100%', padding: '15px', background: '#ff69b4', color: 'white', marginTop: '15px', borderRadius: '15px', border: 'none', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '16px' }}
+            >
+              📞 Confirmar pedido y enviar por WhatsApp
+            </button>
         </div> 
       </div>
     </div>
