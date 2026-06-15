@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { db } from './firebase';
 import { collection, addDoc } from "firebase/firestore";
 
 import miLogo from './assets/logo.png';
 import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
-import img1 from './assets/luffy.jpg';
-import img2 from './assets/Pochacco.jpg';
 import './App.css';
+import { productos } from './data/productos';
+import { useState, useEffect } from 'react';
 
 function App() {
   const [carrito, setCarrito] = useState([]);
@@ -30,13 +29,31 @@ function App() {
   "Franelas"
 ];
 
-  const productos = [
-    { id: 1, nombre: "Llavero Luffy", precio: 8.0, categoria: "Llaveros", material: "Hilo Algodón", medida: "10 cm", stock: 1, descripcion: "Llavero Amigurumi de Luffy tejido a mano con detalles precisos.", imagen: img1 },
-    { id: 2, nombre: "Llavero Pochacco", precio: 8.0, categoria: "Llaveros", material: "Hilo Algodón", medida: "10 cm", stock: 3, descripcion: "Llavero de Pochacco, tierno y resistente.", imagen: img2 },
-    { id: 3, nombre: "Amigurumi Oso", precio: 15.0, categoria: "Amigurumis", material: "Lana Soft", medida: "20 cm", stock: 2, descripcion: "Peluche de oso muy suave, ideal para regalo.", imagen: img1 },
-  ];
 
   const total = carrito.reduce((acc, p) => acc + p.precio, 0);
+  const [tasaBCV, setTasaBCV] = useState(585.50); // Valor por defecto
+
+useEffect(() => {
+  const obtenerTasaDesdeSheet = async () => {
+    try {
+      const sheetId = "1mP2xl01u-NfxqdgXYhlcK0f3YvkcrJcWYANPhsbSjK0"; 
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=select%20B&range=B1`;
+      
+      const response = await fetch(url);
+      const text = await response.text();
+     
+      const json = JSON.parse(text.substring(47, text.length - 2));
+      const valor = json.table.rows[0].c[0].v;
+      
+      setTasaBCV(valor);
+      console.log("Tasa BCV actualizada desde Sheet:", valor);
+    } catch (error) {
+      console.error("No se pudo obtener la tasa, usando valor predeterminado", error);
+    }
+  };
+
+  obtenerTasaDesdeSheet();
+}, []);
 
   const getTarifaYummy = () => {
     switch(zonaYummy) {
@@ -117,6 +134,17 @@ const productosFiltrados =
         <FaShoppingCart />
         {carrito.length > 0 && <span style={{ position: 'absolute', top: '-10px', right: '-10px', background: '#ff69b4', fontSize: '10px', borderRadius: '50%', padding: '2px 6px' }}>{carrito.length}</span>}
       </div>
+<div
+  style={{
+    background: '#262626',
+    color: '#fff',
+    padding: '10px',
+    textAlign: 'center',
+    fontSize: '14px'
+  }}
+>
+  🇻🇪 Tasa BCV: Bs. {tasaBCV}
+</div>
 
       <div className="hero-banner">
 
@@ -357,23 +385,35 @@ const productosFiltrados =
     <span>${total.toFixed(2)}</span>
   </div>
 {(calcularTotalFinal() - total) > 0 && (
-  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ff69b4', marginBottom: '10px' }}>
-    <span>{metodoEnvio === 'Delivery Yummy' ? 'Costo de Delivery:' : 'Gastos adm/envío:'}</span>
-    <span>${(calcularTotalFinal() - total).toFixed(2)}</span>
-  </div>
-)} 
-  <hr style={{ border: '0', borderTop: '1px solid #444', margin: '10px 0' }} />
-  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px' }}>
-    <span>Total a pagar:</span>
-    <span>${calcularTotalFinal().toFixed(2)}</span>
-  </div>
-</div>
-            <button onClick={confirmarPedido} style={{ width: '100%', padding: '15px', background: '#ff69b4', color: 'white', marginTop: '20px', borderRadius: '15px', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Confirmar pedido</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ff69b4', marginBottom: '10px' }}>
+              <span>{metodoEnvio === 'Delivery Yummy' ? 'Costo de Delivery:' : 'Gastos adm/envío:'}</span>
+              <span>${(calcularTotalFinal() - total).toFixed(2)}</span>
+            </div>
+          )} 
 
+          <hr style={{ border: '0', borderTop: '1px solid #444', margin: '10px 0' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px', marginBottom: '5px' }}>
+            <span>Total Dolares:</span>
+            <span>${calcularTotalFinal().toFixed(2)}</span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px', marginBottom: '5px' }}>
+            <span>Total Bs:</span>
+            <span>Bs. {(calcularTotalFinal() * tasaBCV).toFixed(2)}</span>
+          </div>
+
+          <button 
+            onClick={confirmarPedido} 
+            style={{ width: '100%', padding: '15px', background: '#ff69b4', color: 'white', marginTop: '20px', borderRadius: '15px', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            Confirmar pedido
+          </button>
+        </div> 
+      </div>
+    </div>
+  )}
+</div>
+);
+}
 export default App;
