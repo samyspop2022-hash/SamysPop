@@ -60,16 +60,16 @@ useEffect(() => {
 const iniciarSesionAdmin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
+    console.log("Login exitoso:", result.user.email);
     
-    if (user.email === ADMIN_EMAIL) {
+    if (result.user.email === ADMIN_EMAIL) {
       setMostrarModalAdmin(false);
     } else {
       // Guardar intento fallido
       await addDoc(collection(db, "admin_logs"), {
         timestamp: new Date(),
         estado: "fallido",
-        email: user.email,
+        email: result.user.email,
         razon: "correo no autorizado"
       });
       
@@ -77,7 +77,9 @@ const iniciarSesionAdmin = async () => {
       await signOut(auth);
     }
   } catch (error) {
-    console.error("Error al iniciar sesión:", error);
+    console.error("Error completo:", error);
+    console.log("Código de error:", error.code);
+    console.log("Mensaje:", error.message);
     alert("Error al iniciar sesión con Google");
   }
 };
