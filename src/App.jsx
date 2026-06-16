@@ -154,27 +154,34 @@ function App() {
 
   const total = carrito.reduce((acc, p) => acc + p.precio, 0);
 
-  // Obtener tasa BCV
+  // Obtener tasa BCV desde API pública
   useEffect(() => {
-    const obtenerTasaDesdeSheet = async () => {
+    const obtenerTasaBCV = async () => {
       try {
-        const sheetId = "1mP2xl01u-NfxqdgXYhlcK0f3YvkcrJcWYANPhsbSjK0"; 
-        const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tq=select%20B&range=B1`;
+        // Usar API de exchangerate-api.com (gratuita y sin CORS bloqueado)
+        const response = await fetch(
+          'https://api.exchangerate-api.com/v4/latest/USD'
+        );
+        const data = await response.json();
+        const tasaBs = data.rates.VES; // VES es Bolívares Venezolanos
         
-        const response = await fetch(url);
-        const text = await response.text();
-       
-        const json = JSON.parse(text.substring(47, text.length - 2));
-        const valor = json.table.rows[0].c[0].v;
-        
-        setTasaBCV(valor);
-        console.log("Tasa BCV actualizada desde Sheet:", valor);
+        if (tasaBs) {
+          setTasaBCV(tasaBs);
+          console.log("Tasa BCV actualizada desde API:", tasaBs);
+        }
       } catch (error) {
-        console.error("No se pudo obtener la tasa, usando valor predeterminado", error);
+        console.error("Error obteniendo tasa, usando valor predeterminado:", error);
       }
     };
 
-    obtenerTasaDesdeSheet();
+    // Obtener la tasa inmediatamente al cargar
+    obtenerTasaBCV();
+    
+    // Actualizar cada 30 minutos (1800000 ms)
+    const interval = setInterval(obtenerTasaBCV, 30 * 60 * 1000);
+    
+    // Limpiar intervalo cuando se desmonta el componente
+    return () => clearInterval(interval);
   }, []);
 
   const getTarifaYummy = () => {
@@ -424,7 +431,7 @@ function App() {
         textAlign: 'center',
         fontSize: '14px'
       }}>
-        🇻🇪 Tasa BCV: Bs. {tasaBCV}
+        🇻🇪 Tasa BCV: Bs. {tasaBCV.toFixed(2)}
       </div>
 
       <div className="hero-banner">
