@@ -213,13 +213,22 @@ function App() {
     
     try {
       await addDoc(collection(db, "pedidos"), {
-        usuario: formData,
-        productos: carrito.map(p => p.nombre),
-        total: calcularTotalFinal().toFixed(2),
-        envio: metodoEnvio === 'Delivery Yummy' ? `Delivery Yummy - ${zonaYummy}` : metodoEnvio,
-        pago: metodoPago,
-        fecha: new Date().toLocaleString()
-      });
+  usuario: formData,
+  productos: carrito.map(p => ({
+    id: p.id,
+    nombre: p.nombre,
+    precio: p.precio,
+    imagen: p.imagen,
+    categoria: p.categoria,
+    material: p.material,
+    medida: p.medida,
+    descripcion: p.descripcion
+  })),
+  total: calcularTotalFinal().toFixed(2),
+  envio: metodoEnvio === 'Delivery Yummy' ? `Delivery Yummy - ${zonaYummy}` : metodoEnvio,
+  pago: metodoPago,
+  fecha: new Date().toLocaleString()
+});
 
       const mensaje = `¡Hola! Acabo de realizar una compra en Samys Pop%0A%0A` +
         `Productos: ${carrito.map(p => p.nombre).join(', ')}%0A` +
