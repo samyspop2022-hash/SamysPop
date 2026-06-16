@@ -1,6 +1,7 @@
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
-import AgregarProducto from './components/AgregarProducto'; // ← NUEVA LÍNEA
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
+import AgregarProducto from './components/AgregarProducto';
 
 import miLogo from './assets/logo.png';
 import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave, FaCog } from 'react-icons/fa';
@@ -24,12 +25,73 @@ function App() {
   const [tasaBCV, setTasaBCV] = useState(585.50);
   
   // NUEVAS VARIABLES PARA EL ADMIN
-  const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
-  const [contrasenaIngresada, setContrasenaIngresada] = useState('');
-  const [adminAutenticado, setAdminAutenticado] = useState(false);
-  const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
+const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
+const [adminAutenticado, setAdminAutenticado] = useState(false);
+const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
+const [usuarioAdmin, setUsuarioAdmin] = useState(null);
+
+const ADMIN_EMAIL = "samyspop2022@gmail.com";
+const googleProvider = new GoogleAuthProvider();
+
+// Verificar si el usuario está logueado y es el admin
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user && user.email === ADMIN_EMAIL) {
+      setAdminAutenticado(true);
+      setUsuarioAdmin(user);
+      
+      // Guardar log de acceso exitoso
+      addDoc(collection(db, "admin_logs"), {
+        timestamp: new Date(),
+        estado: "exitoso",
+        email: user.email,
+        tipo: "login"
+      });
+    } else {
+      setAdminAutenticado(false);
+      setUsuarioAdmin(null);
+    }
+  });
   
-  const CONTRASENA_CORRECTA = "%Wow.Electro.2026.";
+  return unsubscribe;
+}, []);
+
+// Función para iniciar sesión con Google
+const iniciarSesionAdmin = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    
+    if (user.email === ADMIN_EMAIL) {
+      setMostrarModalAdmin(false);
+    } else {
+      // Guardar intento fallido
+      await addDoc(collection(db, "admin_logs"), {
+        timestamp: new Date(),
+        estado: "fallido",
+        email: user.email,
+        razon: "correo no autorizado"
+      });
+      
+      alert("❌ Este correo no tiene permisos de admin");
+      await signOut(auth);
+    }
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    alert("Error al iniciar sesión con Google");
+  }
+};
+
+// Función para cerrar sesión
+const cerrarSesionAdmin = async () => {
+  try {
+    await signOut(auth);
+    setAdminAutenticado(false);
+    setMostrarFormularioProductos(false);
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+  }
+};
   const productosPorPagina = 12;
   
   const categorias = [
@@ -97,17 +159,6 @@ function App() {
     }
   };
 
-  // FUNCIÓN PARA VERIFICAR CONTRASEÑA
-  const verificarContrasena = () => {
-    if (contrasenaIngresada === CONTRASENA_CORRECTA) {
-      setAdminAutenticado(true);
-      setMostrarModalAdmin(false);
-      setContrasenaIngresada('');
-    } else {
-      alert('❌ Contraseña incorrecta');
-      setContrasenaIngresada('');
-    }
-  };
 
   const agregarAlCarrito = (p, cant) => {
     const nuevosItems = Array(cant).fill(p);
@@ -189,9 +240,9 @@ function App() {
       background: 'transparent',
       border: 'none',
       color: '#888888',
-      fontSize: '10px',
+      fontSize: '8px',
       cursor: 'pointer',
-      padding: '4px',
+      padding: '2px',
       borderRadius: '50%',
       zIndex: 999,
       opacity: 0.4
@@ -202,68 +253,48 @@ function App() {
 )}
 
 
-      {/* MODAL DE CONTRASEÑA */}
-      {mostrarModalAdmin && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
-          <div style={{ background: '#000', padding: '40px', borderRadius: '20px', border: '2px solid #ff69b4', width: '90%', maxWidth: '350px', textAlign: 'center' }}>
-            <h2 style={{ marginBottom: '20px', color: '#ff69b4' }}>🔐 Acceso Admin</h2>
-            <input
-              type="password"
-              placeholder="Ingresa la contraseña"
-              value={contrasenaIngresada}
-              onChange={(e) => setContrasenaIngresada(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && verificarContrasena()}
-              style={{
-                width: '100%',
-                padding: '12px',
-                marginBottom: '15px',
-                borderRadius: '10px',
-                border: '1px solid #ff69b4',
-                background: '#1a1a1a',
-                color: 'white',
-                boxSizing: 'border-box',
-                fontSize: '16px'
-              }}
-              autoFocus
-            />
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                onClick={verificarContrasena}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  background: '#ff69b4',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                Entrar
-              </button>
-              <button
-                onClick={() => {
-                  setMostrarModalAdmin(false);
-                  setContrasenaIngresada('');
-                }}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  background: '#333',
-                  color: 'white',
-                  border: '1px solid #555',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* MODAL DE LOGIN CON GOOGLE */}
+{mostrarModalAdmin && (
+  <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
+    <div style={{ background: '#000', padding: '40px', borderRadius: '20px', border: '2px solid #ff69b4', width: '90%', maxWidth: '350px', textAlign: 'center' }}>
+      <h2 style={{ marginBottom: '20px', color: '#ff69b4' }}>🔐 Acceso Admin</h2>
+      <p style={{ color: '#888', marginBottom: '20px', fontSize: '14px' }}>Inicia sesión con tu cuenta de Google para acceder a admin</p>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <button
+          onClick={iniciarSesionAdmin}
+          style={{
+            flex: 1,
+            padding: '12px',
+            background: '#ff69b4',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '16px'
+          }}
+        >
+          🔑 Google Login
+        </button>
+        <button
+          onClick={() => setMostrarModalAdmin(false)}
+          style={{
+            flex: 1,
+            padding: '12px',
+            background: '#333',
+            color: 'white',
+            border: '1px solid #555',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* BOTÓN Y COMPONENTE AGREGAR PRODUCTO - SOLO SI ESTÁ AUTENTICADO */}
       {adminAutenticado && mostrarFormularioProductos && <AgregarProducto />}
@@ -316,29 +347,26 @@ function App() {
       )}
 
       {adminAutenticado && (
-        <button
-          onClick={() => {
-            setAdminAutenticado(false);
-            setMostrarFormularioProductos(false);
-          }}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '70px',
-            background: '#ff69b4',
-            border: 'none',
-            color: 'white',
-            fontSize: '12px',
-            cursor: 'pointer',
-            padding: '8px 12px',
-            borderRadius: '20px',
-            zIndex: 999,
-            fontWeight: 'bold'
-          }}
-        >
-          🚪 Salir Admin
-        </button>
-      )}
+  <button
+    onClick={cerrarSesionAdmin}
+    style={{
+      position: 'fixed',
+      top: '20px',
+      right: '70px',
+      background: '#ff69b4',
+      border: 'none',
+      color: 'white',
+      fontSize: '12px',
+      cursor: 'pointer',
+      padding: '8px 12px',
+      borderRadius: '20px',
+      zIndex: 999,
+      fontWeight: 'bold'
+    }}
+  >
+    🚪 Salir Admin
+  </button>
+)}
 
       <div onClick={() => setCarritoAbierto(true)} style={{ position: 'fixed', top: '20px', right: '20px', fontSize: '32px', cursor: 'pointer', color: '#ff69b4', zIndex: 1000, transition: 'all 0.3s ease' }} className="carrito-icon">
         <FaShoppingCart />
