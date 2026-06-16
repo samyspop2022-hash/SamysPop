@@ -3,7 +3,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyRp5tdUKzo6jIVYqgk93S18_xFAOw402fw",
+  apiKey: "AIzaSyDh3xb7qXMTxmdj7Xy7WbwNfMfGF_56yLY",
   authDomain: "samys-pop.firebaseapp.com",
   projectId: "samys-pop",
   storageBucket: "samys-pop.appspot.com",
