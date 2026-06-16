@@ -1,9 +1,9 @@
 import { db } from './firebase';
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
-import AgregarProducto from './components/AgregarProducto';
+import AgregarProducto from './components/AgregarProducto'; // ← NUEVA LÍNEA
 
 import miLogo from './assets/logo.png';
-import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
+import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave, FaCog } from 'react-icons/fa';
 import './App.css';
 import { useState, useEffect } from 'react';
 
@@ -22,8 +22,14 @@ function App() {
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [paginaActual, setPaginaActual] = useState(1);
   const [tasaBCV, setTasaBCV] = useState(585.50);
+  
+  // NUEVAS VARIABLES PARA EL ADMIN
+  const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
+  const [contrasenaIngresada, setContrasenaIngresada] = useState('');
+  const [adminAutenticado, setAdminAutenticado] = useState(false);
   const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
   
+  const CONTRASENA_CORRECTA = "%Wow.Electro.2026.";
   const productosPorPagina = 12;
   
   const categorias = [
@@ -88,6 +94,18 @@ function App() {
       case 'Lechería': return 4.50;
       case 'Guanta': return 6.00;
       default: return 0;
+    }
+  };
+
+  // FUNCIÓN PARA VERIFICAR CONTRASEÑA
+  const verificarContrasena = () => {
+    if (contrasenaIngresada === CONTRASENA_CORRECTA) {
+      setAdminAutenticado(true);
+      setMostrarModalAdmin(false);
+      setContrasenaIngresada('');
+    } else {
+      alert('❌ Contraseña incorrecta');
+      setContrasenaIngresada('');
     }
   };
 
@@ -157,34 +175,178 @@ function App() {
   const productosPaginados = productosFiltrados.slice(indexPrimero, indexUltimo);
   const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
 
-  if (mostrarFormularioProductos) {
-    return <AgregarProducto onProductoAgregado={() => setMostrarFormularioProductos(false)} />;
-  }
-
   return (
     <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
-      <button 
-        onClick={() => setMostrarFormularioProductos(true)}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '20px',
-          background: 'linear-gradient(135deg, #ff69b4, #ff4fa8)',
-          color: 'white',
-          border: 'none',
-          padding: '15px 25px',
-          borderRadius: '50px',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          boxShadow: '0 5px 20px rgba(255, 105, 180, 0.3)',
-          zIndex: 999,
-          transition: 'all 0.3s ease'
-        }}
-      >
-        ➕ Agregar Producto
-      </button>
+      {/* BOTÓN ADMIN DISCRETO EN LA ESQUINA SUPERIOR DERECHA */}
+      {!adminAutenticado && (
+  <button
+    onClick={() => setMostrarModalAdmin(true)}
+    style={{
+      position: 'fixed',
+      top: '20px',
+      right: '70px',
+      background: 'transparent',
+      border: 'none',
+      color: '#ff69b4',
+      fontSize: '14px',
+      cursor: 'pointer',
+      padding: '5px',
+      borderRadius: '50%',
+      zIndex: 999,
+      transition: 'all 0.3s ease',
+      opacity: 0.3
+    }}
+    onMouseEnter={(e) => {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'scale(1.2)';
+    }}
+    onMouseLeave={(e) => {
+      e.target.style.opacity = '0.3';
+      e.target.style.transform = 'scale(1)';
+    }}
+  >
+    ⚙️
+  </button>
+)}
+
+      {/* MODAL DE CONTRASEÑA */}
+      {mostrarModalAdmin && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.9)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 5000 }}>
+          <div style={{ background: '#000', padding: '40px', borderRadius: '20px', border: '2px solid #ff69b4', width: '90%', maxWidth: '350px', textAlign: 'center' }}>
+            <h2 style={{ marginBottom: '20px', color: '#ff69b4' }}>🔐 Acceso Admin</h2>
+            <input
+              type="password"
+              placeholder="Ingresa la contraseña"
+              value={contrasenaIngresada}
+              onChange={(e) => setContrasenaIngresada(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && verificarContrasena()}
+              style={{
+                width: '100%',
+                padding: '12px',
+                marginBottom: '15px',
+                borderRadius: '10px',
+                border: '1px solid #ff69b4',
+                background: '#1a1a1a',
+                color: 'white',
+                boxSizing: 'border-box',
+                fontSize: '16px'
+              }}
+              autoFocus
+            />
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={verificarContrasena}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  background: '#ff69b4',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                Entrar
+              </button>
+              <button
+                onClick={() => {
+                  setMostrarModalAdmin(false);
+                  setContrasenaIngresada('');
+                }}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  background: '#333',
+                  color: 'white',
+                  border: '1px solid #555',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BOTÓN Y COMPONENTE AGREGAR PRODUCTO - SOLO SI ESTÁ AUTENTICADO */}
+      {adminAutenticado && mostrarFormularioProductos && <AgregarProducto />}
+
+      {adminAutenticado && !mostrarFormularioProductos && (
+        <button 
+          onClick={() => setMostrarFormularioProductos(true)}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '20px',
+            background: 'linear-gradient(135deg, #ff69b4, #ff4fa8)',
+            color: 'white',
+            border: 'none',
+            padding: '15px 25px',
+            borderRadius: '50px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 5px 20px rgba(255, 105, 180, 0.3)',
+            zIndex: 999,
+            transition: 'all 0.3s ease'
+          }}
+        >
+          ➕ Agregar Producto
+        </button>
+      )}
+
+      {adminAutenticado && mostrarFormularioProductos && (
+        <button 
+          onClick={() => setMostrarFormularioProductos(false)}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '20px',
+            background: '#ff69b4',
+            color: 'white',
+            border: 'none',
+            padding: '15px 25px',
+            borderRadius: '50px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 5px 20px rgba(255, 105, 180, 0.3)',
+            zIndex: 999
+          }}
+        >
+          ← Volver a Productos
+        </button>
+      )}
+
+      {adminAutenticado && (
+        <button
+          onClick={() => {
+            setAdminAutenticado(false);
+            setMostrarFormularioProductos(false);
+          }}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '70px',
+            background: '#ff69b4',
+            border: 'none',
+            color: 'white',
+            fontSize: '12px',
+            cursor: 'pointer',
+            padding: '8px 12px',
+            borderRadius: '20px',
+            zIndex: 999,
+            fontWeight: 'bold'
+          }}
+        >
+          🚪 Salir Admin
+        </button>
+      )}
 
       <div onClick={() => setCarritoAbierto(true)} style={{ position: 'fixed', top: '20px', right: '20px', fontSize: '32px', cursor: 'pointer', color: '#ff69b4', zIndex: 1000, transition: 'all 0.3s ease' }} className="carrito-icon">
         <FaShoppingCart />
