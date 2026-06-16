@@ -30,7 +30,7 @@ const [adminAutenticado, setAdminAutenticado] = useState(false);
 const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
 const [usuarioAdmin, setUsuarioAdmin] = useState(null);
 
-const ADMIN_EMAIL = "saminh_26@gmail.com";
+const ADMIN_EMAIL = "saminh26@gmail.com";
 const googleProvider = new GoogleAuthProvider();
 
 // Verificar si el usuario está logueado y es el admin
