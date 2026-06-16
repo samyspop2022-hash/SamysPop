@@ -1,5 +1,6 @@
 import { db } from './firebase';
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import AgregarProducto from './components/AgregarProducto';
 
 import miLogo from './assets/logo.png';
 import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
@@ -21,6 +22,7 @@ function App() {
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [paginaActual, setPaginaActual] = useState(1);
   const [tasaBCV, setTasaBCV] = useState(585.50);
+  const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
   
   const productosPorPagina = 12;
   
@@ -155,9 +157,34 @@ function App() {
   const productosPaginados = productosFiltrados.slice(indexPrimero, indexUltimo);
   const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
 
+  if (mostrarFormularioProductos) {
+    return <AgregarProducto onProductoAgregado={() => setMostrarFormularioProductos(false)} />;
+  }
+
   return (
     <div style={{ padding: '60px 20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', backgroundColor: '#1a1a1a', color: '#ffffff', minHeight: '100vh' }}>
       
+      <button 
+        onClick={() => setMostrarFormularioProductos(true)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          background: 'linear-gradient(135deg, #ff69b4, #ff4fa8)',
+          color: 'white',
+          border: 'none',
+          padding: '15px 25px',
+          borderRadius: '50px',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          boxShadow: '0 5px 20px rgba(255, 105, 180, 0.3)',
+          zIndex: 999,
+          transition: 'all 0.3s ease'
+        }}
+      >
+        ➕ Agregar Producto
+      </button>
 
       <div onClick={() => setCarritoAbierto(true)} style={{ position: 'fixed', top: '20px', right: '20px', fontSize: '32px', cursor: 'pointer', color: '#ff69b4', zIndex: 1000, transition: 'all 0.3s ease' }} className="carrito-icon">
         <FaShoppingCart />
