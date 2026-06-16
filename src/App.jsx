@@ -3,7 +3,7 @@ import { collection, addDoc, query, getDocs } from "firebase/firestore";
 import AgregarProducto from './components/AgregarProducto';
 
 import miLogo from './assets/logo.png';
-import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
+import { FaShoppingCart, FaTimes, FaPlus, FaMinus, FaTrash, FaTruck, FaMotorcycle, FaStore, FaPaypal, FaWallet, FaUniversity, FaMoneyBillWave, FaUpload } from 'react-icons/fa';
 import './App.css';
 import { useState, useEffect } from 'react';
 
@@ -29,8 +29,17 @@ function App() {
   const [mostrarFormularioProductos, setMostrarFormularioProductos] = useState(false);
   const [usuarioAdmin, setUsuarioAdmin] = useState(null);
 
+  // NUEVAS VARIABLES PARA CLOUDINARY
+  const [comprobantePago, setComprobantePago] = useState(null);
+  const [comprobantePreview, setComprobantePreview] = useState(null);
+  const [cargandoComprobante, setCargandoComprobante] = useState(false);
+
   const ADMIN_EMAIL = "saminh26@gmail.com";
   const GOOGLE_CLIENT_ID = "802512638598-8oppa00srpv67bsi3k9etsnvqmjugbe4.apps.googleusercontent.com";
+  
+  // CLOUDINARY CONFIG
+  const CLOUDINARY_CLOUD = "djsiwt8s4";
+  const CLOUDINARY_PRESET = "productos_samys";
 
   // Verificar si ya está logueado al cargar
   useEffect(() => {
@@ -116,6 +125,57 @@ function App() {
       alert("¡Sesión cerrada!");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
+    }
+  };
+
+  // FUNCIÓN PARA SUBIR COMPROBANTE A CLOUDINARY
+  const subirComprobanteACloudinary = async (file) => {
+    if (!file) {
+      alert("Por favor selecciona una imagen");
+      return null;
+    }
+
+    setCargandoComprobante(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+        { method: 'POST', body: formData }
+      );
+
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        setComprobantePago(data.secure_url);
+        console.log("Comprobante subido:", data.secure_url);
+        alert("✅ Comprobante subido exitosamente");
+        return data.secure_url;
+      } else {
+        alert("Error al subir el comprobante");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error subiendo comprobante:", error);
+      alert("Error al subir el comprobante: " + error.message);
+      return null;
+    } finally {
+      setCargandoComprobante(false);
+    }
+  };
+
+  // MANEJAR SELECCIÓN DE ARCHIVO
+  const manejarSeleccionComprobante = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Preview
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setComprobantePreview(event.target?.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -209,38 +269,46 @@ function App() {
       return;
     }
 
+    if (!comprobantePago) {
+      alert("Por favor sube el comprobante de pago.");
+      return;
+    }
+
     let costoExtra = metodoEnvio === 'Envío Nacional- Cobro en Destino' ? 1 : 0;
     
     try {
       await addDoc(collection(db, "pedidos"), {
-  usuario: formData,
-  productos: carrito.map(p => ({
-    id: p.id,
-    nombre: p.nombre,
-    precio: p.precio,
-    imagen: p.imagen,
-    categoria: p.categoria,
-    material: p.material,
-    medida: p.medida,
-    descripcion: p.descripcion
-  })),
-  total: calcularTotalFinal().toFixed(2),
-  envio: metodoEnvio === 'Delivery Yummy' ? `Delivery Yummy - ${zonaYummy}` : metodoEnvio,
-  pago: metodoPago,
-  fecha: new Date().toLocaleString()
-});
+        usuario: formData,
+        productos: carrito.map(p => ({
+          id: p.id,
+          nombre: p.nombre,
+          precio: p.precio,
+          imagen: p.imagen,
+          categoria: p.categoria,
+          material: p.material,
+          medida: p.medida,
+          descripcion: p.descripcion
+        })),
+        total: calcularTotalFinal().toFixed(2),
+        envio: metodoEnvio === 'Delivery Yummy' ? `Delivery Yummy - ${zonaYummy}` : metodoEnvio,
+        pago: metodoPago,
+        comprobanteURL: comprobantePago,
+        fecha: new Date().toLocaleString()
+      });
 
       const mensaje = `¡Hola! Acabo de realizar una compra en Samys Pop%0A%0A` +
         `Productos: ${carrito.map(p => p.nombre).join(', ')}%0A` +
         `Envío: ${metodoEnvio === 'Delivery Yummy' ? 'Delivery Yummy (' + zonaYummy + ')' : metodoEnvio}%0A` +
-        `Total a pagar: $${calcularTotalFinal().toFixed(2)}%0A%0A` +
+        `Total a pagar: $${calcularTotalFinal().toFixed(2)}%0A` +
+        `Total Bs: Bs. ${(calcularTotalFinal() * tasaBCV).toFixed(2)}%0A%0A` +
         `Método de Pago: ${metodoPago}%0A%0A` +
+        `Comprobante: ${comprobantePago}%0A%0A` +
         `Datos para la entrega:%0A` +
         `Nombre: ${formData.nombre}%0A` +
         `C.I.: ${formData.cedula}%0A` +
         `Teléfono: ${formData.whatsapp}%0A` +
         `Dirección: ${formData.direccion}%0A%0A` +
-        `Confirma mi pedido y el comprobante de pago. ¡Gracias!`;
+        `Confirma mi pedido. ¡Gracias!`;
 
       const telefonoNegocio = "584220327576"; 
       window.open(`https://wa.me/${telefonoNegocio}?text=${mensaje}`, '_blank');
@@ -248,8 +316,10 @@ function App() {
       alert("¡Pedido realizado con éxito!");
       setCarrito([]);
       setCheckoutAbierto(false);
+      setComprobantePago(null);
+      setComprobantePreview(null);
     } catch (e) { 
-      alert("Error al guardar el pedido"); 
+      alert("Error al guardar el pedido: " + e.message); 
     }
   };
 
@@ -701,6 +771,90 @@ function App() {
               </div>
             )}
 
+            {/* NUEVA SECCIÓN: UPLOAD DE COMPROBANTE */}
+            <div style={{ marginTop: '20px', padding: '15px', background: '#1a1a1a', borderRadius: '15px', border: '2px solid #ff69b4' }}>
+              <h3 style={{ marginTop: '0', color: '#ff69b4', marginBottom: '15px' }}>📸 Comprobante de Pago</h3>
+              
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '10px', fontSize: '14px', color: '#ff69b4', fontWeight: 'bold' }}>
+                  Sube tu comprobante de pago:
+                </label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={(e) => {
+                    manejarSeleccionComprobante(e);
+                  }}
+                  style={{ 
+                    display: 'none',
+                    width: '100%'
+                  }}
+                  id="comprobanteInput"
+                  disabled={cargandoComprobante}
+                />
+                <label 
+                  htmlFor="comprobanteInput"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    padding: '15px',
+                    border: '2px dashed #ff69b4',
+                    borderRadius: '10px',
+                    cursor: cargandoComprobante ? 'not-allowed' : 'pointer',
+                    backgroundColor: '#111',
+                    transition: 'all 0.3s'
+                  }}
+                >
+                  <FaUpload color="#ff69b4" />
+                  <span style={{ color: '#ff69b4' }}>
+                    {cargandoComprobante ? 'Subiendo...' : 'Haz clic para seleccionar'}
+                  </span>
+                </label>
+              </div>
+
+              {/* PREVIEW */}
+              {comprobantePreview && (
+                <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+                  <img 
+                    src={comprobantePreview} 
+                    alt="Preview" 
+                    style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '10px', marginBottom: '10px' }}
+                  />
+                  <button
+                    onClick={async () => {
+                      const fileInput = document.getElementById('comprobanteInput');
+                      const file = fileInput?.files?.[0];
+                      if (file) {
+                        await subirComprobanteACloudinary(file);
+                      }
+                    }}
+                    disabled={cargandoComprobante || !comprobantePreview}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      background: comprobantePago ? '#4caf50' : '#ff69b4',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: cargandoComprobante ? 'not-allowed' : 'pointer',
+                      fontWeight: 'bold',
+                      opacity: cargandoComprobante ? 0.6 : 1
+                    }}
+                  >
+                    {cargandoComprobante ? '⏳ Subiendo...' : comprobantePago ? '✅ Comprobante subido' : '📤 Subir comprobante'}
+                  </button>
+                </div>
+              )}
+
+              {comprobantePago && (
+                <div style={{ padding: '10px', background: '#111', borderRadius: '10px', borderLeft: '4px solid #4caf50', fontSize: '13px' }}>
+                  <p style={{ margin: '0', color: '#4caf50', fontWeight: 'bold' }}>✅ Comprobante subido correctamente</p>
+                </div>
+              )}
+            </div>
+
             <div style={{ marginTop: '20px', padding: '15px', background: '#262626', borderRadius: '15px', fontSize: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
                 <span>Subtotal productos:</span>
@@ -720,20 +874,31 @@ function App() {
                 <span>${calcularTotalFinal().toFixed(2)}</span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px', marginBottom: '5px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px', marginBottom: '15px' }}>
                 <span>Total Bs:</span>
                 <span>Bs. {(calcularTotalFinal() * tasaBCV).toFixed(2)}</span>
               </div>
 
-              <div style={{ marginTop: '20px', padding: '15px', background: '#1a1a1a', borderRadius: '15px', border: '1px solid #ff69b4', textAlign: 'center' }}>
-                <p style={{ margin: '0', fontSize: '13px', color: '#ff69b4', fontWeight: 'bold' }}>
-                  📸 Toma una captura de tu comprobante de pago y envíalo por WhatsApp
-                </p>
-              </div>
-
               <button 
                 onClick={confirmarPedido} 
-                style={{ width: '100%', padding: '15px', background: '#ff69b4', color: 'white', marginTop: '15px', borderRadius: '15px', border: 'none', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '16px' }}
+                disabled={!comprobantePago || cargandoComprobante}
+                style={{ 
+                  width: '100%', 
+                  padding: '15px', 
+                  background: comprobantePago ? '#ff69b4' : '#666', 
+                  color: 'white', 
+                  marginTop: '15px', 
+                  borderRadius: '15px', 
+                  border: 'none', 
+                  cursor: comprobantePago ? 'pointer' : 'not-allowed',
+                  fontWeight: 'bold', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  gap: '10px', 
+                  fontSize: '16px',
+                  opacity: comprobantePago ? 1 : 0.6
+                }}
               >
                 📞 Confirmar pedido y enviar por WhatsApp
               </button>
