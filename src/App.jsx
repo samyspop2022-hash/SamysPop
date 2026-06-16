@@ -184,31 +184,23 @@ function App() {
     onClick={() => setMostrarModalAdmin(true)}
     style={{
       position: 'fixed',
-      top: '20px',
-      right: '70px',
+      bottom: '20px',
+      left: '20px',
       background: 'transparent',
       border: 'none',
-      color: '#ff69b4',
-      fontSize: '14px',
+      color: '#888888',
+      fontSize: '18px',
       cursor: 'pointer',
-      padding: '5px',
+      padding: '8px',
       borderRadius: '50%',
       zIndex: 999,
-      transition: 'all 0.3s ease',
-      opacity: 0.3
-    }}
-    onMouseEnter={(e) => {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'scale(1.2)';
-    }}
-    onMouseLeave={(e) => {
-      e.target.style.opacity = '0.3';
-      e.target.style.transform = 'scale(1)';
+      opacity: 0.4
     }}
   >
     ⚙️
   </button>
 )}
+
 
       {/* MODAL DE CONTRASEÑA */}
       {mostrarModalAdmin && (
