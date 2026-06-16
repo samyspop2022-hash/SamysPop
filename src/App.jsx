@@ -189,9 +189,9 @@ function App() {
       background: 'transparent',
       border: 'none',
       color: '#888888',
-      fontSize: '18px',
+      fontSize: '10px',
       cursor: 'pointer',
-      padding: '8px',
+      padding: '4px',
       borderRadius: '50%',
       zIndex: 999,
       opacity: 0.4
